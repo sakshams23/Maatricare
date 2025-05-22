@@ -9,11 +9,11 @@ def main():
     st.markdown("<hr style='border:1px solid gray'>", unsafe_allow_html=True)
 
     
-    option = st.selectbox(
+    option = st.sidebar.selectbox(
     "Choose a service",
     ("Check Symptoms (AI Assistant)", "Detect Signs of Malnutrition", "Personalized Diet Plan", "Tips for Newborn Care"),
     )
-
+    st.subheader(option)
 
 
  
