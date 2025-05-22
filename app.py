@@ -27,14 +27,14 @@ def main():
     if option == "Maternity Risks":
         st.write("### Enter the following details:")
 
-        age = st.number_input("Age", min_value=18, max_value=50, value=30)
-        body_temp = st.number_input("Body Temperature (°F)", min_value=96.0, max_value=100.0, value=97.6)
-        heart_rate = st.number_input("Heart Rate (bpm)", min_value=60, max_value=120, value=95)
+        age = st.number_input("Age", min_value=18, max_value=60, value=18)
+        body_temp = st.number_input("Body Temperature (°F)", min_value=40.0, max_value=104.0, value=97.6)
+        heart_rate = st.number_input("Heart Rate (bpm)", min_value=45, max_value=150, value=72)
         systolic_bp = st.number_input("Systolic BP (mm Hg)", min_value=90, max_value=170, value=120)
-        diastolic_bp = st.number_input("Diastolic BP (mm Hg)", min_value=60, max_value=110, value=95)
-        bmi = st.number_input("BMI", min_value=18.0, max_value=30.0, value=23.5)
-        hba1c = st.number_input("HbA1c (%)", min_value=35.0, max_value=50.0, value=40.0)
-        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=4.0, max_value=8.0, value=5.8)
+        diastolic_bp = st.number_input("Diastolic BP (mm Hg)", min_value=40, max_value=140, value=80)
+        bmi = st.number_input("BMI", min_value=15.0, max_value=30.0, value=21)
+        hba1c = st.number_input("HbA1c (%)", min_value=30.0, max_value=50.0, value=40.0)
+        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=3.0, max_value=9, value=5.8)
 
         if st.button("Predict Maternity Risk"):
             model = load_model()
