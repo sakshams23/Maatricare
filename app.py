@@ -31,7 +31,7 @@ def main():
         fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=50, max_value=400, value=90)
 
         if st.button("Predict Maternity Risk"):
-            model = pickle.load(open('maternity.pkl','rb'))
+            model = load_model()
             input_data = np.array([[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]])
             prediction = model.predict(input_data)
 
