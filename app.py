@@ -32,9 +32,9 @@ def main():
         heart_rate = st.number_input("Heart Rate (bpm)", min_value=40, max_value=200, value=70)
         systolic_bp = st.number_input("Systolic BP (mm Hg)", min_value=80, max_value=200, value=120)
         diastolic_bp = st.number_input("Diastolic BP (mm Hg)", min_value=50, max_value=130, value=80)
-        bmi = st.number_input("BMI", min_value=10.0, max_value=50.0, value=22.0)
-        hba1c = st.number_input("HbA1c (%)", min_value=3.0, max_value=15.0, value=5.5)
-        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=50, max_value=400, value=90)
+        bmi = st.number_input("BMI", min_value=10.0, max_value=50.0, value=10)
+        hba1c = st.number_input("HbA1c (%)", min_value=30, max_value=60, value=30)
+        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=3.0, max_value=15, value=3.0)
 
         if st.button("Predict Maternity Risk"):
             model = load_model()
