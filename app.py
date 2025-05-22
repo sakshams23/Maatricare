@@ -1,6 +1,7 @@
 import streamlit as st
 import pickle
 import numpy as np
+import pandas as pd
 
 def load_model():
     with open("maternity.pkl", "rb") as f:
@@ -38,9 +39,15 @@ def main():
         if st.button("Predict Maternity Risk"):
             model = load_model()
             le = load_label_encoder()
-            input_data = np.array([[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]])
-            pred_encoded = model.predict(input_data)
+            
+            input_df = pd.DataFrame(
+                [[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]],
+                columns=['Age', 'BodyTemp', 'HeartRate', 'SystolicBP', 'DiastolicBP', 'BMI', 'HbA1c', 'FastingGlucose']
+            )
+            
+            pred_encoded = model.predict(input_df)
             predicted_class = le.inverse_transform(pred_encoded)[0]
+            
             st.success(f"Predicted risk level: {predicted_class}")
 
 if __name__ == "__main__":
