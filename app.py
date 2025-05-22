@@ -30,7 +30,7 @@ def main():
     st.subheader(option)
 
     if option == "Maternity Risks":
-        st.write("### Enter the following details:")
+        st.subheader("Enter the following details:")
 
         age = st.number_input("Age", min_value=18, max_value=60, value=18)
         body_temp = st.number_input("Body Temperature (°F)", min_value=40.0, max_value=104.0, value=97.6)
