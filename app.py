@@ -7,6 +7,11 @@ def load_model():
         model = pickle.load(f)
     return model
 
+def load_label_encoder():
+    with open("label_encoder.pkl", "rb") as f:
+        le = pickle.load(f)
+    return le
+
 def main():
     st.title("Maatricare")
     st.subheader(" _Personalized_ _AI-Based_ :green[_Nutrition_] _&_ :green[_Maternal_ _Care_] ")
@@ -32,10 +37,11 @@ def main():
 
         if st.button("Predict Maternity Risk"):
             model = load_model()
+            le = load_label_encoder()
             input_data = np.array([[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]])
-            prediction = model.predict(input_data)
-
-            st.success(f"Prediction: {prediction[0]}")
+            pred_encoded = model.predict(input_data)
+            predicted_class = le.inverse_transform(pred_encoded)[0]
+            st.success(f"Predicted risk level: {predicted_class}")
 
 if __name__ == "__main__":
     main()
