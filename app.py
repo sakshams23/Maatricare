@@ -1,6 +1,5 @@
 import streamlit as st
 import pickle
-import numpy as np
 import pandas as pd
 
 def load_model():
@@ -20,7 +19,13 @@ def main():
 
     option = st.sidebar.selectbox(
         "Choose a service",
-        ("Check Symptoms (AI Assistant)", "Detect Signs of Malnutrition", "Personalized Diet Plan", "Tips for Newborn Care", "Maternity Risks"),
+        (
+            "Check Symptoms (AI Assistant)",
+            "Detect Signs of Malnutrition",
+            "Personalized Diet Plan",
+            "Tips for Newborn Care",
+            "Maternity Risks",
+        ),
     )
     st.subheader(option)
 
@@ -34,20 +39,29 @@ def main():
         diastolic_bp = st.number_input("Diastolic BP (mm Hg)", min_value=40, max_value=140, value=80)
         bmi = st.number_input("BMI", min_value=15.0, max_value=30.0, value=21.0)
         hba1c = st.number_input("HbA1c (%)", min_value=30.0, max_value=50.0, value=40.0)
-        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=3.0, max_value=9, value=5.8)
+        fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=3.0, max_value=9.0, value=5.8)
 
         if st.button("Predict Maternity Risk"):
             model = load_model()
             le = load_label_encoder()
-            
+
             input_df = pd.DataFrame(
                 [[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]],
-                columns=['Age', 'BodyTemp', 'HeartRate', 'SystolicBP', 'DiastolicBP', 'BMI', 'HbA1c', 'FastingGlucose']
+                columns=[
+                    "Age",
+                    "BodyTemp",
+                    "HeartRate",
+                    "SystolicBP",
+                    "DiastolicBP",
+                    "BMI",
+                    "HbA1c",
+                    "FastingGlucose",
+                ],
             )
-            
+
             pred_encoded = model.predict(input_df)
             predicted_class = le.inverse_transform(pred_encoded)[0]
-            
+
             st.success(f"Predicted risk level: {predicted_class}")
 
 if __name__ == "__main__":
