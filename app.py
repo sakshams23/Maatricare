@@ -1,8 +1,10 @@
+import os
 import streamlit as st
 import pickle
 import pandas as pd
 st.set_page_config(page_title="Maatricare", layout='wide')
-st.image("./icon.png", use_container_width=True )
+icon_path = os.path.join(os.path.dirname(__file__), 'icon.png')
+st.image(icon_path, use_container_width=True)
 def load_model():
     with open("maternity.pkl", "rb") as f:
         model = pickle.load(f)
