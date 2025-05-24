@@ -110,7 +110,7 @@ def main():
             "Pelvic Pressure", "Braxton Hicks Contractions", "Leaking Breasts"
         ]
 
-        st.subheader("🤖 AI Maternity Symptom Checker")
+        st.subheader("AI Maternity Symptom Checker")
         st.write("Select the symptoms you're experiencing:")
 
         selected_symptoms = st.multiselect("Symptoms", symptoms)
@@ -129,18 +129,17 @@ def main():
                     st.write(output[0]['generated_text'])
 
     elif option == "Tips for Newborn Care":
-        st.subheader("👶 AI Tips for Newborn Care")
+        st.subheader("AI Tips for Newborn Care")
         st.write("Here are some AI-generated suggestions to help you care for your newborn with love 💖:")
 
         generator = load_huggingface_model()
 
         prompt = (
             "Give 5 cute and helpful tips for newborn baby care. "
-            "Include emojis, and make it easy to understand for new parents."
         )
 
         if st.button("Generate AI Tips"):
-            with st.spinner("Thinking like a loving nanny... 🍼💭"):
+            with st.spinner("Thinking like a loving nanny...💭"):
                 output = generator(prompt, max_length=100, do_sample=True, temperature=0.8)
                 result = output[0]['generated_text']
 
