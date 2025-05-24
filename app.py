@@ -18,7 +18,7 @@ def load_label_encoder(filename):
 
 def main():
     st.title("Maatricare")
-    st.subheader(" _Personalized_ _AI-Based_ :green[_Nutrition_] _&_ :green[_Maternal_ _Care_] ")
+    st.subheader("_Personalized_ _AI-Based_ :green[_Nutrition_] _&_ :green[_Maternal_ _Care_]")
     st.markdown("<hr style='border:1px solid gray'>", unsafe_allow_html=True)
 
     option = st.sidebar.selectbox(
@@ -52,14 +52,8 @@ def main():
             input_df = pd.DataFrame(
                 [[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]],
                 columns=[
-                    "Age",
-                    "BodyTemp",
-                    "HeartRate",
-                    "SystolicBP",
-                    "DiastolicBP",
-                    "BMI",
-                    "HbA1c",
-                    "FastingGlucose",
+                    "Age", "BodyTemp", "HeartRate", "SystolicBP", "DiastolicBP",
+                    "BMI", "HbA1c", "FastingGlucose",
                 ],
             )
 
@@ -101,10 +95,8 @@ def main():
             pred_label = le_mn.inverse_transform(pred_class)
 
             st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
-            
-        elif option == "Check Symptoms (AI Assistant)":
-        
 
+    elif option == "Check Symptoms (AI Assistant)":
         # Configure Gemini API key (store securely in production!)
         genai.configure(api_key="YOUR_GEMINI_API_KEY")
 
@@ -135,7 +127,6 @@ def main():
                     st.write(response.text)
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
-
 
     else:
         st.info("This feature is under development.")
