@@ -1,25 +1,28 @@
 import streamlit as st
 import pickle
 import pandas as pd
-import os
 from transformers import pipeline
 
 st.set_page_config(page_title="Maatricare", layout='wide')
+
 
 def load_model(filename):
     with open(filename, "rb") as f:
         model = pickle.load(f)
     return model
 
+
 def load_label_encoder(filename):
     with open(filename, "rb") as f:
         le = pickle.load(f)
     return le
 
-# Load Hugging Face model for symptom checking
+
+# Load Hugging Face model for AI responses
 @st.cache_resource
 def load_huggingface_model():
-    return pipeline("text-generation", model="gpt2")  # Lightweight and works offline
+    return pipeline("text-generation", model="gpt2")  # Lightweight, works offline
+
 
 def main():
     st.title("Maatricare")
@@ -116,7 +119,7 @@ def main():
             if not selected_symptoms:
                 st.warning("Please select at least one symptom.")
             else:
-                prompt = f" What could be the possible causes, concerns, and recommended care advice for these {', '.join(selected_symptoms)}.symptoms?"
+                prompt = f"What could be the possible causes, concerns, and recommended care advice for these symptoms: {', '.join(selected_symptoms)}?"
 
                 generator = load_huggingface_model()
 
@@ -125,8 +128,32 @@ def main():
                     st.markdown("🤖 AI Suggestion:")
                     st.write(output[0]['generated_text'])
 
+    elif option == "Tips for Newborn Care":
+        st.subheader("👶 AI Tips for Newborn Care")
+        st.write("Here are some AI-generated suggestions to help you care for your newborn with love 💖:")
+
+        generator = load_huggingface_model()
+
+        prompt = (
+            "Give 5 cute and helpful tips for newborn baby care. "
+            "Include emojis, and make it easy to understand for new parents."
+        )
+
+        if st.button("Generate AI Tips"):
+            with st.spinner("Thinking like a loving nanny... 🍼💭"):
+                output = generator(prompt, max_length=100, do_sample=True, temperature=0.8)
+                result = output[0]['generated_text']
+
+                tips = result.split("\n")
+                clean_tips = [tip.strip() for tip in tips if tip.strip()][:5]
+
+                st.markdown("### 💡 Newborn Care Tips:")
+                for tip in clean_tips:
+                    st.markdown(f"✅ {tip}")
+
     else:
         st.info("This feature is under development.")
+
 
 if __name__ == "__main__":
     main()
