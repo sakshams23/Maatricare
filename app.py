@@ -97,7 +97,7 @@ def main():
             st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
 
     elif option == "Check Symptoms (AI Assistant)":
-        genai.configure(api_key="GEMINI_API_KEY")
+        genai.configure(api_key="GOOGLE_API_KEY")
 
         symptoms = [
             "Nausea and Vomiting", "Fatigue or Tiredness", "Frequent Urination", "Breast Tenderness and Swelling",
