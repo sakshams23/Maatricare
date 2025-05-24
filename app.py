@@ -75,9 +75,16 @@ def main():
         age = st.number_input("Age (years)", min_value=0, max_value=18, value=3)
         height = st.number_input("Height (cm)", min_value=30, max_value=200, value=88)
         weight = st.number_input("Weight (kg)", min_value=1, max_value=150, value=13)
-        low_income = st.selectbox("Low Income", options=[0, 1])
-        lower_middle_income = st.selectbox("Lower Middle Income", options=[0, 1])
-        upper_middle_income = st.selectbox("Upper Middle Income", options=[0, 1])
+
+        income_level = st.selectbox(
+            "Household Income Level",
+            options=["Low Income", "Lower Middle Income", "Upper Middle Income"]
+        )
+
+        # One-hot encode income level
+        low_income = 1 if income_level == "Low Income" else 0
+        lower_middle_income = 1 if income_level == "Lower Middle Income" else 0
+        upper_middle_income = 1 if income_level == "Upper Middle Income" else 0
 
         if st.button("Predict Malnutrition Status"):
             svm_model_mn = load_model("svm_model_mn.pkl")
