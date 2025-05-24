@@ -71,7 +71,7 @@ def main():
 
         columns = ['Sex', 'Age', 'Height', 'Weight', 'Low Income', 'Lower Middle Income', 'Upper Middle Income']
 
-        sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
+        sex = st.selectbox("Gender", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
         age = st.number_input("Age (years)", min_value=0, max_value=18, value=3)
         height = st.number_input("Height (cm)", min_value=30, max_value=200, value=88)
         weight = st.number_input("Weight (kg)", min_value=1, max_value=150, value=13)
