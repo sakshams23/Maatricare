@@ -1,6 +1,8 @@
 import streamlit as st
 import pickle
 import pandas as pd
+import google.generativeai as genai
+import os
 
 st.set_page_config(page_title="Maatricare", layout='wide')
 
@@ -99,6 +101,41 @@ def main():
             pred_label = le_mn.inverse_transform(pred_class)
 
             st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
+            
+        elif option == "Check Symptoms (AI Assistant)":
+        
+
+        # Configure Gemini API key (store securely in production!)
+        genai.configure(api_key="YOUR_GEMINI_API_KEY")
+
+        symptoms = [
+            "Nausea and Vomiting", "Fatigue or Tiredness", "Frequent Urination", "Breast Tenderness and Swelling",
+            "Food Cravings and Aversions", "Mood Swings", "Bloating and Gas", "Constipation", "Heartburn and Indigestion",
+            "Headaches", "Mild Cramping or Spotting", "Back Pain", "Shortness of Breath", "Leg Cramps",
+            "Increased Vaginal Discharge", "Dizziness or Fainting", "Swollen Feet and Ankles", "Stretch Marks",
+            "Linea Nigra", "Nasal Congestion or Nosebleeds", "Insomnia or Trouble Sleeping", "Itchy Skin",
+            "Pelvic Pressure", "Braxton Hicks Contractions", "Leaking Breasts"
+        ]
+
+        st.subheader("🤖 AI Maternity Symptom Checker")
+        st.write("Select the symptoms you're experiencing:")
+
+        selected_symptoms = st.multiselect("Symptoms", symptoms)
+
+        if st.button("Get AI Advice"):
+            if not selected_symptoms:
+                st.warning("Please select at least one symptom.")
+            else:
+                prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice?"
+
+                try:
+                    model = genai.GenerativeModel("gemini-pro")
+                    response = model.generate_content(prompt)
+                    st.markdown("🤖 AI Suggestion:")
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+
 
     else:
         st.info("This feature is under development.")
