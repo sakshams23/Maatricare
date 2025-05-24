@@ -22,7 +22,7 @@ def main():
         "Choose a service",
         (
             "Check Symptoms (AI Assistant)",
-            "Detect Signs of Malnutrition",
+            "Child Malnutrition",
             "Personalized Diet Plan",
             "Tips for Newborn Care",
             "Maternity Risks",
