@@ -122,7 +122,7 @@ def main():
 
                 try:
                     response = openai.ChatCompletion.create(
-                        model="gpt-3.5",  # you can use "gpt-4" or "gpt-3.5-turbo" if you prefer
+                        model="gpt-3.5-turbo",  # you can use "gpt-4" or "gpt-3.5-turbo" if you prefer
                         messages=[
                             {"role": "system", "content": "You are a helpful assistant specializing in maternity and nutrition."},
                             {"role": "user", "content": prompt},
