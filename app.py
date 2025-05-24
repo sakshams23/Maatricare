@@ -3,6 +3,17 @@ import pickle
 import pandas as pd
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure Google API Key
+api_key = os.getenv("GOOGLE_API_KEY")
+if not api_key:
+    st.error("Google API key is not set. Check your .env file or environment variables.")
+else:
+    genai.configure(api_key=api_key)
 
 st.set_page_config(page_title="Maatricare", layout='wide')
 
@@ -97,9 +108,6 @@ def main():
             st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
 
     elif option == "Check Symptoms (AI Assistant)":
-        # Configure Gemini API key (store securely in production!)
-        genai.configure(api_key="YOUR_GEMINI_API_KEY")
-
         symptoms = [
             "Nausea and Vomiting", "Fatigue or Tiredness", "Frequent Urination", "Breast Tenderness and Swelling",
             "Food Cravings and Aversions", "Mood Swings", "Bloating and Gas", "Constipation", "Heartburn and Indigestion",
