@@ -5,3 +5,7 @@ seaborn==0.10.1
 pandas==2.0.2
 matplotlib==3.7.1
 scikit_learn==1.2.2
+streamlit
+google-generativeai
+python-dotenv
+langchain
