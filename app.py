@@ -116,12 +116,12 @@ def main():
             if not selected_symptoms:
                 st.warning("Please select at least one symptom.")
             else:
-                prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice in 100 words paragraph?"
+                prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice?"
 
                 generator = load_huggingface_model()
 
                 with st.spinner("Generating response..."):
-                    output = generator(prompt, max_length=200, do_sample=True, temperature=0.7)
+                    output = generator(prompt, max_length=50, do_sample=True, temperature=0.7)
                     st.markdown("🤖 AI Suggestion:")
                     st.write(output[0]['generated_text'])
 
