@@ -9,3 +9,4 @@ streamlit
 google-generativeai
 python-dotenv
 langchain
+openai
