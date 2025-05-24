@@ -1,8 +1,8 @@
 import streamlit as st
 import pickle
 import pandas as pd
-import openai
 import os
+from transformers import pipeline
 
 st.set_page_config(page_title="Maatricare", layout='wide')
 
@@ -16,8 +16,10 @@ def load_label_encoder(filename):
         le = pickle.load(f)
     return le
 
-# Set OpenAI API key from environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Load Hugging Face model for symptom checking
+@st.cache_resource
+def load_huggingface_model():
+    return pipeline("text-generation", model="gpt2")  # Lightweight and works offline
 
 def main():
     st.title("Maatricare")
@@ -54,10 +56,7 @@ def main():
 
             input_df = pd.DataFrame(
                 [[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]],
-                columns=[
-                    "Age", "BodyTemp", "HeartRate", "SystolicBP", "DiastolicBP",
-                    "BMI", "HbA1c", "FastingGlucose",
-                ],
+                columns=["Age", "BodyTemp", "HeartRate", "SystolicBP", "DiastolicBP", "BMI", "HbA1c", "FastingGlucose"],
             )
 
             pred_encoded = model.predict(input_df)
@@ -80,7 +79,6 @@ def main():
             options=["Low Income", "Lower Middle Income", "Upper Middle Income"]
         )
 
-        # One-hot encode income level
         low_income = 1 if income_level == "Low Income" else 0
         lower_middle_income = 1 if income_level == "Lower Middle Income" else 0
         upper_middle_income = 1 if income_level == "Upper Middle Income" else 0
@@ -120,22 +118,12 @@ def main():
             else:
                 prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice?"
 
-                try:
-                    response = openai.ChatCompletion.create(
-                        model="gpt-3.5-turbo",  # you can use "gpt-4" or "gpt-3.5-turbo" if you prefer
-                        messages=[
-                            {"role": "system", "content": "You are a helpful assistant specializing in maternity and nutrition."},
-                            {"role": "user", "content": prompt},
-                        ],
-                        max_tokens=500,
-                        temperature=0.7,
-                    )
-                    answer = response['choices'][0]['message']['content']
-                    st.markdown("🤖 AI Suggestion:")
-                    st.write(answer)
+                generator = load_huggingface_model()
 
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
+                with st.spinner("Generating response..."):
+                    output = generator(prompt, max_length=200, do_sample=True, temperature=0.7)
+                    st.markdown("🤖 AI Suggestion:")
+                    st.write(output[0]['generated_text'])
 
     else:
         st.info("This feature is under development.")
