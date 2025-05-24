@@ -1,15 +1,16 @@
-import os
 import streamlit as st
 import pickle
 import pandas as pd
+
 st.set_page_config(page_title="Maatricare", layout='wide')
-def load_model():
-    with open("maternity.pkl", "rb") as f:
+
+def load_model(filename):
+    with open(filename, "rb") as f:
         model = pickle.load(f)
     return model
 
-def load_label_encoder():
-    with open("label_encoder.pkl", "rb") as f:
+def load_label_encoder(filename):
+    with open(filename, "rb") as f:
         le = pickle.load(f)
     return le
 
@@ -43,8 +44,8 @@ def main():
         fasting_glucose = st.number_input("Fasting Glucose (mg/dL)", min_value=3.0, max_value=9.0, value=5.8)
 
         if st.button("Predict Maternity Risk"):
-            model = load_model()
-            le = load_label_encoder()
+            model = load_model("maternity.pkl")
+            le = load_label_encoder("label_encoder.pkl")
 
             input_df = pd.DataFrame(
                 [[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]],
@@ -64,6 +65,36 @@ def main():
             predicted_class = le.inverse_transform(pred_encoded)[0]
 
             st.success(f"Predicted risk level: {predicted_class}")
+
+    elif option == "Child Malnutrition":
+        st.subheader("Enter child details:")
+
+        columns = ['Sex', 'Age', 'Height', 'Weight', 'Low Income', 'Lower Middle Income', 'Upper Middle Income']
+
+        sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
+        age = st.number_input("Age (years)", min_value=0, max_value=18, value=3)
+        height = st.number_input("Height (cm)", min_value=30, max_value=200, value=88)
+        weight = st.number_input("Weight (kg)", min_value=1, max_value=150, value=13)
+        low_income = st.selectbox("Low Income", options=[0, 1])
+        lower_middle_income = st.selectbox("Lower Middle Income", options=[0, 1])
+        upper_middle_income = st.selectbox("Upper Middle Income", options=[0, 1])
+
+        if st.button("Predict Malnutrition Status"):
+            svm_model_mn = load_model("svm_model_mn.pkl")
+            le_mn = load_label_encoder("label_encoder_mn.pkl")
+
+            sample_input_df = pd.DataFrame(
+                [[sex, age, height, weight, low_income, lower_middle_income, upper_middle_income]],
+                columns=columns
+            )
+
+            pred_class = svm_model_mn.predict(sample_input_df)
+            pred_label = le_mn.inverse_transform(pred_class)
+
+            st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
+
+    else:
+        st.info("This feature is under development.")
 
 if __name__ == "__main__":
     main()
