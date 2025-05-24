@@ -1,7 +1,7 @@
 import streamlit as st
 import pickle
 import pandas as pd
-import google.generativeai as genai
+import openai
 import os
 
 st.set_page_config(page_title="Maatricare", layout='wide')
@@ -15,6 +15,9 @@ def load_label_encoder(filename):
     with open(filename, "rb") as f:
         le = pickle.load(f)
     return le
+
+# Set OpenAI API key from environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def main():
     st.title("Maatricare")
@@ -97,8 +100,6 @@ def main():
             st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
 
     elif option == "Check Symptoms (AI Assistant)":
-        genai.configure(api_key="GOOGLE_API_KEY")
-
         symptoms = [
             "Nausea and Vomiting", "Fatigue or Tiredness", "Frequent Urination", "Breast Tenderness and Swelling",
             "Food Cravings and Aversions", "Mood Swings", "Bloating and Gas", "Constipation", "Heartburn and Indigestion",
@@ -120,10 +121,19 @@ def main():
                 prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice?"
 
                 try:
-                    model = genai.GenerativeModel("gemini-2.0-flash")
-                    response = model.generate_content(prompt)
+                    response = openai.ChatCompletion.create(
+                        model="gpt-4o-mini",  # you can use "gpt-4" or "gpt-3.5-turbo" if you prefer
+                        messages=[
+                            {"role": "system", "content": "You are a helpful assistant specializing in maternity and nutrition."},
+                            {"role": "user", "content": prompt},
+                        ],
+                        max_tokens=500,
+                        temperature=0.7,
+                    )
+                    answer = response['choices'][0]['message']['content']
                     st.markdown("🤖 AI Suggestion:")
-                    st.write(response.text)
+                    st.write(answer)
+
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 
