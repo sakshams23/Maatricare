@@ -116,7 +116,7 @@ def main():
             if not selected_symptoms:
                 st.warning("Please select at least one symptom.")
             else:
-                prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice?"
+                prompt = f" What could be the possible causes, concerns, and recommended care advice for these {', '.join(selected_symptoms)}.symptoms?"
 
                 generator = load_huggingface_model()
 
