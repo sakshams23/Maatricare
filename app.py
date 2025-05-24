@@ -120,7 +120,7 @@ def main():
                 prompt = f"The user is experiencing the following symptoms during pregnancy: {', '.join(selected_symptoms)}. What could be the possible causes, concerns, and recommended care advice?"
 
                 try:
-                    model = genai.GenerativeModel("gemini-pro")
+                    model = genai.GenerativeModel("gemini-2.0-flash")
                     response = model.generate_content(prompt)
                     st.markdown("🤖 AI Suggestion:")
                     st.write(response.text)
