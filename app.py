@@ -34,7 +34,7 @@ def main():
         (
             "Check Symptoms (AI Assistant)",
             "Child Malnutrition",
-            "Personalized Diet Plan",
+            "Fetus Ultrasound Analyzer",
             "Tips for Newborn Care",
             "Maternity Risks",
         ),
@@ -151,7 +151,9 @@ def main():
                     st.markdown(f"✅ {tip}")
 
     else:
-        st.info("This feature is under development.")
+        url = "https://ultrasoundanalyzer.streamlit.app/"
+        st.write("check out this [link](%s)" % url)
+        st.markdown("check out this [link](%s)" % url)
 
 
 if __name__ == "__main__":
