@@ -154,7 +154,7 @@ def main():
         url = "https://ultrasoundanalyzer.streamlit.app/"
         url2 = "https://github.com/sakshams23/Ultrasound_Analyzer/tree/main/Ultrasound%20reports%20sample"
         st.write("Ultrasound Analyzer is an additional feature to access it check out this [link](%s)" % url)
-        st.markdown("You can get some samples for checking in the repository [Here](%s)" % url2)
+        st.markdown("You can get some samples for Testing is in the repository [Here](%s)" % url2)
 
 
 if __name__ == "__main__":
