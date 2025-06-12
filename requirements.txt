@@ -9,6 +9,5 @@ streamlit
 google-generativeai
 python-dotenv
 langchain
-openai==0.28
-transformers
-torch
+
+
