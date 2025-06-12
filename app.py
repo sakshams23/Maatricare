@@ -37,77 +37,105 @@ def load_label_encoder(filename):
 
 st.set_page_config(page_title="Maatricare", layout='wide')
 
-# Text mapping function
-def t(eng, hindi, language):
-    return eng if language == "English" else hindi
-
 def main():
     st.title("Maatricare")
-    st.subheader("_Personalized_ _AI-Based_ :green[_Nutrition_] _&_ :green[_Maternal_ _Care_]")
 
     # Language Toggle
-    language = st.sidebar.radio("Language / भाषा", ["English", "हिंदी"])
+    lang = st.sidebar.radio("Select Language / भाषा चुनें", ("English", "हिन्दी"))
+
+    if lang == "English":
+        st.subheader("_Personalized_ _AI-Based_ :green[_Nutrition_] _&_ :green[_Maternal_ _Care_]")
+    else:
+        st.subheader("_व्यक्तिगत_ _एआई-आधारित_ :green[_पोषण_] _और_ :green[_मातृत्व_ _देखभाल_]")
 
     st.markdown("<hr style='border:1px solid gray'>", unsafe_allow_html=True)
 
-    option = st.sidebar.selectbox(
-        t("Choose a service", "सेवा चुनें", language),
-        (
-            t("Check Symptoms (AI Assistant)", "लक्षण जांचें (एआई सहायक)", language),
-            t("Child Malnutrition", "बाल कुपोषण", language),
-            t("Fetus Ultrasound Analyzer", "भ्रूण अल्ट्रासाउंड विश्लेषक", language),
-            t("Tips for Newborn Care", "नवजात शिशु देखभाल सुझाव", language),
-            t("Maternity Risks", "गर्भावस्था जोखिम", language),
+    if lang == "English":
+        option = st.sidebar.selectbox(
+            "Choose a service",
+            (
+                "Check Symptoms (AI Assistant)",
+                "Child Malnutrition",
+                "Fetus Ultrasound Analyzer",
+                "Tips for Newborn Care",
+                "Maternity Risks",
+            ),
         )
-    )
+    else:
+        option = st.sidebar.selectbox(
+            "सेवा चुनें",
+            (
+                "लक्षण जांचें (एआई सहायक)",
+                "बाल कुपोषण",
+                "भ्रूण अल्ट्रासाउंड विश्लेषक",
+                "नवजात देखभाल के सुझाव",
+                "मातृत्व जोखिम",
+            ),
+        )
+
     st.subheader(option)
 
-    if option == t("Maternity Risks", "गर्भावस्था जोखिम", language):
-        st.subheader(t("Enter the following details:", "निम्न विवरण दर्ज करें:", language))
+    if option in ["Maternity Risks", "मातृत्व जोखिम"]:
+        if lang == "English":
+            st.subheader("Enter the following details:")
+        else:
+            st.subheader("निम्नलिखित विवरण दर्ज करें:")
 
-        age = st.number_input(t("Age", "आयु", language), min_value=18, max_value=60, value=18)
-        body_temp = st.number_input(t("Body Temperature (°F)", "शरीर का तापमान (°F)", language), min_value=40.0, max_value=104.0, value=97.6)
-        heart_rate = st.number_input(t("Heart Rate (bpm)", "हृदय गति (बीपीएम)", language), min_value=45, max_value=150, value=72)
-        systolic_bp = st.number_input(t("Systolic BP (mm Hg)", "सिस्टोलिक बीपी (मिमी एचजी)", language), min_value=90, max_value=170, value=120)
-        diastolic_bp = st.number_input(t("Diastolic BP (mm Hg)", "डायस्टोलिक बीपी (मिमी एचजी)", language), min_value=40, max_value=140, value=80)
-        bmi = st.number_input(t("BMI", "बीएमआई", language), min_value=15.0, max_value=30.0, value=21.0)
-        hba1c = st.number_input(t("HbA1c (%)", "एचबीए1सी (%)", language), min_value=30.0, max_value=50.0, value=40.0)
-        fasting_glucose = st.number_input(t("Fasting Glucose (mg/dL)", "फास्टिंग ग्लूकोज (मिग्रा/डीएल)", language), min_value=3.0, max_value=9.0, value=5.8)
+        age = st.number_input("Age / उम्र", min_value=18, max_value=60, value=18)
+        body_temp = st.number_input("Body Temperature (°F) / शरीर का तापमान", min_value=40.0, max_value=104.0, value=97.6)
+        heart_rate = st.number_input("Heart Rate (bpm) / हृदय गति", min_value=45, max_value=150, value=72)
+        systolic_bp = st.number_input("Systolic BP (mm Hg) / सिस्टोलिक बीपी", min_value=90, max_value=170, value=120)
+        diastolic_bp = st.number_input("Diastolic BP (mm Hg) / डायस्टोलिक बीपी", min_value=40, max_value=140, value=80)
+        bmi = st.number_input("BMI / बीएमआई", min_value=15.0, max_value=30.0, value=21.0)
+        hba1c = st.number_input("HbA1c (%)", min_value=30.0, max_value=50.0, value=40.0)
+        fasting_glucose = st.number_input("Fasting Glucose (mg/dL) / उपवास ग्लूकोज", min_value=3.0, max_value=9.0, value=5.8)
 
-        if st.button(t("Predict Maternity Risk", "गर्भावस्था जोखिम पूर्वानुमानित करें", language)):
+        if st.button("Predict Maternity Risk / मातृत्व जोखिम की भविष्यवाणी करें"):
             model = load_model("maternity.pkl")
             le = load_label_encoder("label_encoder.pkl")
 
             input_df = pd.DataFrame(
                 [[age, body_temp, heart_rate, systolic_bp, diastolic_bp, bmi, hba1c, fasting_glucose]],
-                columns=["Age", "BodyTemp", "HeartRate", "SystolicBP", "DiastolicBP", "BMI", "HbA1c", "FastingGlucose"]
+                columns=["Age", "BodyTemp", "HeartRate", "SystolicBP", "DiastolicBP", "BMI", "HbA1c", "FastingGlucose"],
             )
 
             pred_encoded = model.predict(input_df)
             predicted_class = le.inverse_transform(pred_encoded)[0]
 
-            st.success(f"{t('Predicted risk level', 'पूर्वानुमानित जोखिम स्तर', language)}: {predicted_class}")
+            if lang == "English":
+                st.success(f"Predicted risk level: {predicted_class}")
+            else:
+                st.success(f"अनुमानित जोखिम स्तर: {predicted_class}")
 
-    elif option == t("Child Malnutrition", "बाल कुपोषण", language):
-        st.subheader(t("Enter child details:", "बच्चे का विवरण दर्ज करें:", language))
+    elif option in ["Child Malnutrition", "बाल कुपोषण"]:
+        if lang == "English":
+            st.subheader("Enter child details:")
+        else:
+            st.subheader("बच्चे का विवरण दर्ज करें:")
 
         columns = ['Sex', 'Age', 'Height', 'Weight', 'Low Income', 'Lower Middle Income', 'Upper Middle Income']
 
-        sex = st.selectbox(t("Gender", "लिंग", language), options=[0, 1], format_func=lambda x: t("Female", "महिला", language) if x == 0 else t("Male", "पुरुष", language))
-        age = st.number_input(t("Age (years)", "आयु (वर्ष)", language), min_value=0, max_value=18, value=3)
-        height = st.number_input(t("Height (cm)", "ऊंचाई (सेमी)", language), min_value=30, max_value=200, value=88)
-        weight = st.number_input(t("Weight (kg)", "वजन (किग्रा)", language), min_value=1, max_value=150, value=13)
+        sex = st.selectbox("Gender / लिंग", options=[0, 1], format_func=lambda x: "Female / महिला" if x == 0 else "Male / पुरुष")
+        age = st.number_input("Age (years) / उम्र (वर्ष)", min_value=0, max_value=18, value=3)
+        height = st.number_input("Height (cm) / ऊंचाई (सेमी)", min_value=30, max_value=200, value=88)
+        weight = st.number_input("Weight (kg) / वजन (किग्रा)", min_value=1, max_value=150, value=13)
 
-        income_level = st.selectbox(
-            t("Household Income Level", "परिवार की आय स्तर", language),
-            options=["Low Income", "Lower Middle Income", "Upper Middle Income"]
-        )
+        if lang == "English":
+            income_level = st.selectbox(
+                "Household Income Level",
+                options=["Low Income", "Lower Middle Income", "Upper Middle Income"]
+            )
+        else:
+            income_level = st.selectbox(
+                "घरेलू आय स्तर",
+                options=["Low Income", "Lower Middle Income", "Upper Middle Income"]
+            )
 
         low_income = 1 if income_level == "Low Income" else 0
         lower_middle_income = 1 if income_level == "Lower Middle Income" else 0
         upper_middle_income = 1 if income_level == "Upper Middle Income" else 0
 
-        if st.button(t("Predict Malnutrition Status", "कुपोषण स्थिति पूर्वानुमानित करें", language)):
+        if st.button("Predict Malnutrition Status / कुपोषण स्थिति की भविष्यवाणी करें"):
             svm_model_mn = load_model("svm_model_mn.pkl")
             le_mn = load_label_encoder("label_encoder_mn.pkl")
 
@@ -119,78 +147,83 @@ def main():
             pred_class = svm_model_mn.predict(sample_input_df)
             pred_label = le_mn.inverse_transform(pred_class)
 
-            st.success(f"{t('Predicted Malnutrition Status', 'पूर्वानुमानित कुपोषण स्थिति', language)}: {pred_label[0]}")
+            if lang == "English":
+                st.success(f"Predicted Malnutrition Status: {pred_label[0]}")
+            else:
+                st.success(f"अनुमानित कुपोषण स्थिति: {pred_label[0]}")
 
-    elif option == t("Check Symptoms (AI Assistant)", "लक्षण जांचें (एआई सहायक)", language):
+    elif option in ["Check Symptoms (AI Assistant)", "लक्षण जांचें (एआई सहायक)"]:
         symptoms = [
-            t("Nausea and Vomiting", "मतली और उल्टी", language),
-            t("Fatigue or Tiredness", "थकान", language),
-            t("Frequent Urination", "बार-बार पेशाब आना", language),
-            t("Breast Tenderness and Swelling", "स्तनों में कोमलता और सूजन", language),
-            t("Food Cravings and Aversions", "खाने की लालसा और अरुचि", language),
-            t("Mood Swings", "मूड में बदलाव", language),
-            t("Bloating and Gas", "फुलाव और गैस", language),
-            t("Constipation", "कब्ज", language),
-            t("Heartburn and Indigestion", "सीने में जलन और अपच", language),
-            t("Headaches", "सिरदर्द", language),
-            t("Mild Cramping or Spotting", "हल्के ऐंठन या स्पॉटिंग", language),
-            t("Back Pain", "पीठ दर्द", language),
-            t("Shortness of Breath", "सांस की कमी", language),
-            t("Leg Cramps", "पैरों में ऐंठन", language),
-            t("Increased Vaginal Discharge", "योनि स्राव में वृद्धि", language),
-            t("Dizziness or Fainting", "चक्कर आना या बेहोशी", language),
-            t("Swollen Feet and Ankles", "सूजे हुए पैर और टखने", language),
-            t("Stretch Marks", "खिंचाव के निशान", language),
-            t("Linea Nigra", "लिनिया निग्रा", language),
-            t("Nasal Congestion or Nosebleeds", "नाक बंद होना या नाक से खून आना", language),
-            t("Insomnia or Trouble Sleeping", "अनिद्रा या सोने में परेशानी", language),
-            t("Itchy Skin", "त्वचा में खुजली", language),
-            t("Pelvic Pressure", "श्रोणि में दबाव", language),
-            t("Braxton Hicks Contractions", "ब्रेक्सटन हिक्स संकुचन", language),
-            t("Leaking Breasts", "स्तनों से रिसाव", language)
+            "Nausea and Vomiting", "Fatigue or Tiredness", "Frequent Urination", "Breast Tenderness and Swelling",
+            "Food Cravings and Aversions", "Mood Swings", "Bloating and Gas", "Constipation", "Heartburn and Indigestion",
+            "Headaches", "Mild Cramping or Spotting", "Back Pain", "Shortness of Breath", "Leg Cramps",
+            "Increased Vaginal Discharge", "Dizziness or Fainting", "Swollen Feet and Ankles", "Stretch Marks",
+            "Linea Nigra", "Nasal Congestion or Nosebleeds", "Insomnia or Trouble Sleeping", "Itchy Skin",
+            "Pelvic Pressure", "Braxton Hicks Contractions", "Leaking Breasts"
         ]
 
-        st.subheader(t("AI Maternity Symptom Checker", "एआई मातृत्व लक्षण चेकर", language))
-        st.write(t("Select the symptoms you are experiencing:", "वे लक्षण चुनें जो आप अनुभव कर रही हैं:", language))
+        if lang == "English":
+            st.subheader("AI Maternity Symptom Checker")
+            st.write("Select the symptoms you're experiencing:")
+        else:
+            st.subheader("एआई मातृत्व लक्षण जांचक")
+            st.write("वे लक्षण चुनें जो आप अनुभव कर रहे हैं:")
 
-        selected_symptoms = st.multiselect(t("Symptoms", "लक्षण", language), symptoms)
+        selected_symptoms = st.multiselect("Symptoms / लक्षण", symptoms)
 
-        if st.button(t("Get AI Advice", "एआई सलाह प्राप्त करें", language)):
+        if st.button("Get AI Advice / एआई सलाह प्राप्त करें"):
             if not selected_symptoms:
-                st.warning(t("Please select at least one symptom.", "कृपया कम से कम एक लक्षण चुनें।", language))
-            else:
-                if language == "English":
-                    prompt = f"Provide possible causes, concerns, and recommended care advice for these maternity symptoms: {', '.join(selected_symptoms)}"
+                if lang == "English":
+                    st.warning("Please select at least one symptom.")
                 else:
-                    prompt = f"इन मातृत्व लक्षणों के संभावित कारण, चिंताएं और देखभाल की सिफारिशें हिंदी में बताएं: {', '.join(selected_symptoms)}"
+                    st.warning("कृपया कम से कम एक लक्षण चुनें।")
+            else:
+                prompt = f"Provide possible causes, concerns, and recommended care advice for these maternity symptoms: {', '.join(selected_symptoms)}"
+                if lang == "हिन्दी":
+                    prompt += " कृपया उत्तर हिंदी में दें।"
 
-                with st.spinner(t("Generating response using Gemini AI...", "Gemini AI से उत्तर प्राप्त किया जा रहा है...", language)):
+                with st.spinner("Generating response using Gemini AI... / जेमिनी एआई का उपयोग करके उत्तर तैयार किया जा रहा है..."):
                     response = get_gemini_response(prompt)
-                    st.markdown("🤖 **" + t("AI Suggestion", "एआई सुझाव", language) + ":**")
+                    st.markdown("🤖 **AI Suggestion / एआई सुझाव:**")
                     st.write(response)
 
-    elif option == t("Tips for Newborn Care", "नवजात शिशु देखभाल सुझाव", language):
-        st.subheader(t("AI Tips for Newborn Care", "नवजात शिशु देखभाल के लिए एआई सुझाव", language))
-        st.write(t("Here are some AI-generated suggestions to help you care for your newborn with love 💖:", "यहां आपके नवजात शिशु की देखभाल के लिए कुछ एआई सुझाव हैं:", language))
+    elif option in ["Tips for Newborn Care", "नवजात देखभाल के सुझाव"]:
+        if lang == "English":
+            st.subheader("AI Tips for Newborn Care")
+            st.write("Here are some AI-generated suggestions to help you care for your newborn with love 💖:")
+        else:
+            st.subheader("नवजात देखभाल के लिए एआई सुझाव")
+            st.write("यहाँ कुछ एआई-जनित सुझाव दिए गए हैं जो आपको अपने नवजात की देखभाल में मदद करेंगे 💖:")
 
-        if st.button(t("Generate AI Tips", "एआई सुझाव प्राप्त करें", language)):
-            prompt = "Give 5 cute and helpful tips for newborn baby care." if language == "English" else "नवजात शिशु की देखभाल के लिए 5 प्यारे और सहायक सुझाव हिंदी में दें।"
+        if st.button("Generate AI Tips / एआई सुझाव प्राप्त करें"):
+            prompt = "Give 5 cute and helpful tips for newborn baby care."
+            if lang == "हिन्दी":
+                prompt += " कृपया उत्तर हिंदी में दें।"
 
-            with st.spinner(t("Generating tips using Gemini AI...", "Gemini AI से सुझाव प्राप्त किए जा रहे हैं...", language)):
+            with st.spinner("Generating tips using Gemini AI... / जेमिनी एआई का उपयोग करके सुझाव तैयार किए जा रहे हैं..."):
                 response = get_gemini_response(prompt)
 
                 tips = response.split("\n")
                 clean_tips = [tip.strip() for tip in tips if tip.strip()][:5]
 
-                st.markdown("### 💡 " + t("Newborn Care Tips:", "नवजात शिशु देखभाल सुझाव:", language))
+                if lang == "English":
+                    st.markdown("### 💡 Newborn Care Tips:")
+                else:
+                    st.markdown("### 💡 नवजात देखभाल सुझाव:")
+
                 for tip in clean_tips:
                     st.markdown(f"✅ {tip}")
 
     else:
         url = "https://ultrasoundanalyzer.streamlit.app/"
         url2 = "https://github.com/sakshams23/Ultrasound_Analyzer/tree/main/Ultrasound%20reports%20sample"
-        st.write(t("Ultrasound Analyzer is an additional feature. Access it", "अल्ट्रासाउंड विश्लेषक एक अतिरिक्त सुविधा है। इसे यहां एक्सेस करें", language) + f" [here]({url}).")
-        st.markdown(t("You can get some sample reports for testing", "परीक्षण के लिए कुछ नमूना रिपोर्ट प्राप्त कर सकते हैं", language) + f" [here]({url2}).")
+
+        if lang == "English":
+            st.write(f"Ultrasound Analyzer is an additional feature. Access it [here]({url}).")
+            st.markdown(f"You can get some sample reports for testing [here]({url2}).")
+        else:
+            st.write(f"अल्ट्रासाउंड विश्लेषक एक अतिरिक्त सुविधा है। इसे [यहाँ]({url}) एक्सेस करें।")
+            st.markdown(f"परीक्षण के लिए कुछ नमूना रिपोर्ट्स [यहाँ]({url2}) प्राप्त करें।")
 
 if __name__ == "__main__":
     main()
