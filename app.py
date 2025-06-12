@@ -1,9 +1,27 @@
 import streamlit as st
 import pickle
 import pandas as pd
-from transformers import pipeline
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
 
-st.set_page_config(page_title="Maatricare", layout='wide')
+load_dotenv()
+
+
+api_key = os.getenv("GOOGLE_API_KEY")
+if not api_key:
+    st.error("Google API key is not set. Check your .env file or environment variables.")
+else:
+    genai.configure(api_key=api_key)
+
+
+def get_gemini_response(prompt):
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash-002')
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error generating response: {str(e)}"
 
 
 def load_model(filename):
@@ -11,18 +29,12 @@ def load_model(filename):
         model = pickle.load(f)
     return model
 
-
 def load_label_encoder(filename):
     with open(filename, "rb") as f:
         le = pickle.load(f)
     return le
 
-
-# Load Hugging Face model for AI responses
-@st.cache_resource
-def load_huggingface_model():
-    return pipeline("text-generation", model="gpt2")  # Lightweight, works offline
-
+st.set_page_config(page_title="Maatricare", layout='wide')
 
 def main():
     st.title("Maatricare")
@@ -119,31 +131,24 @@ def main():
             if not selected_symptoms:
                 st.warning("Please select at least one symptom.")
             else:
-                prompt = f"What could be the possible causes, concerns, and recommended care advice for these symptoms: {', '.join(selected_symptoms)}?"
+                prompt = f"Provide possible causes, concerns, and recommended care advice for these maternity symptoms: {', '.join(selected_symptoms)}"
 
-                generator = load_huggingface_model()
-
-                with st.spinner("Generating response..."):
-                    output = generator(prompt, max_length=50, do_sample=True, temperature=0.7)
-                    st.markdown("🤖 AI Suggestion:")
-                    st.write(output[0]['generated_text'])
+                with st.spinner("Generating response using Gemini AI..."):
+                    response = get_gemini_response(prompt)
+                    st.markdown("🤖 **AI Suggestion:**")
+                    st.write(response)
 
     elif option == "Tips for Newborn Care":
         st.subheader("AI Tips for Newborn Care")
         st.write("Here are some AI-generated suggestions to help you care for your newborn with love 💖:")
 
-        generator = load_huggingface_model()
-
-        prompt = (
-            "Give 5 cute and helpful tips for newborn baby care. "
-        )
-
         if st.button("Generate AI Tips"):
-            with st.spinner("Thinking like a loving nanny...💭"):
-                output = generator(prompt, max_length=100, do_sample=True, temperature=0.8)
-                result = output[0]['generated_text']
+            prompt = "Give 5 cute and helpful tips for newborn baby care."
 
-                tips = result.split("\n")
+            with st.spinner("Generating tips using Gemini AI..."):
+                response = get_gemini_response(prompt)
+
+                tips = response.split("\n")
                 clean_tips = [tip.strip() for tip in tips if tip.strip()][:5]
 
                 st.markdown("### 💡 Newborn Care Tips:")
@@ -153,8 +158,8 @@ def main():
     else:
         url = "https://ultrasoundanalyzer.streamlit.app/"
         url2 = "https://github.com/sakshams23/Ultrasound_Analyzer/tree/main/Ultrasound%20reports%20sample"
-        st.write("Ultrasound Analyzer is an additional feature to access it check out this [link](%s)" % url)
-        st.markdown("You can get some samples for Testing is in the repository [Here](%s)" % url2)
+        st.write("Ultrasound Analyzer is an additional feature. Access it [here](%s)." % url)
+        st.markdown("You can get some sample reports for testing [here](%s)." % url2)
 
 
 if __name__ == "__main__":
