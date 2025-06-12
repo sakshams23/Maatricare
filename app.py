@@ -195,3 +195,6 @@ else:
                f"अल्ट्रासाउंड विश्लेषक एक अतिरिक्त सुविधा है। इसे [यहां]({url}) एक्सेस करें।"))
     st.markdown(t(f"You can get some sample reports for testing [here]({url2}).",
                   f"आप परीक्षण के लिए कुछ नमूना रिपोर्ट [यहां]({url2}) प्राप्त कर सकते हैं।"))
+
+if __name__ == "__main__":
+    main()
