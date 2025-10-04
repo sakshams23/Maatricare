@@ -18,7 +18,7 @@ else:
 # Initialize Gemini Model
 def get_gemini_response(prompt):
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash-002')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
